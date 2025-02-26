@@ -9,7 +9,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log("Current user in Navbar:", user);
+
   const handleLogout = () => {
     // First dispatch the action to clear the user state
     dispatch(removeUser());

@@ -22,8 +22,7 @@ export default function LoginPage() {
         password,
       }, { withCredentials: true });
       
-      console.log("Login response:", res.data);
-      
+     
       if (res.data) {
         // Make sure user data has required fields
         if (!res.data.firstName || !res.data.photoUrl) {

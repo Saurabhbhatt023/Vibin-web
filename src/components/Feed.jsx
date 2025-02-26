@@ -1,42 +1,50 @@
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { BASE_URL } from "../utils/constant";
+import { addFeed } from "../utils/feedSlice";
+import { useEffect, useState } from "react";
+import UserCard from "./UserCard";
 import { useNavigate } from "react-router-dom";
 
 const Feed = () => {
-  const user = useSelector((store) => store.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    // Redirect to login if no user is logged in
+  const user = useSelector((store) => store.user);
+  const feed = useSelector((store) => store.feed);
+  const [loading, setLoading] = useState(true);
+
+  const getFeed = async () => {
     if (!user) {
       navigate('/login');
+      return;
     }
-  }, [user, navigate]);
 
-  // Don't render anything if no user (will redirect)
-  if (!user) return null;
+    try {
+      setLoading(true);
+      const res = await axios.get(BASE_URL + "/feed", { withCredentials: true });
+      dispatch(addFeed(res.data));
+    } catch (err) {
+      console.error("Error fetching feed:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getFeed();
+  }, [user]);
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
+  if (!feed || feed.length === 0) {
+    return <div className="flex justify-center items-center h-64">No users found in feed</div>;
+  }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-6">Hello {user?.firstName}, Welcome to Your Feed!</h1>
-      
-      {/* Feed content goes here */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-xl font-semibold mb-2">Discover People</h2>
-          <p className="text-gray-600">Find people with similar interests</p>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-xl font-semibold mb-2">Messages</h2>
-          <p className="text-gray-600">You have no new messages</p>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-xl font-semibold mb-2">Your Matches</h2>
-          <p className="text-gray-600">Start connecting with your matches</p>
-        </div>
-      </div>
+    <div className="flex justify-center items-center p-8">
+      {feed && feed[0] && <UserCard user={feed[5]} />}
     </div>
   );
 };
