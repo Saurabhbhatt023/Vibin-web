@@ -6,15 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constant";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("Ronaldo1211@gmail.com");
-  const [password, setPassword] = useState("$Ronaldo123");
+  const [email, setEmail] = useState("Raju2@apple.com");
+  const [password, setPassword] = useState("$Bheem2024");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     
     try {
       const res = await axios.post(BASE_URL + "/login", {
@@ -22,15 +24,28 @@ export default function LoginPage() {
         password,
       }, { withCredentials: true });
       
+      console.log("Login response:", res.data);
      
       if (res.data) {
-        // Make sure user data has required fields
-        if (!res.data.firstName || !res.data.photoUrl) {
-          console.warn("User data missing required fields:", res.data);
+        let userData;
+        
+        // Check for different response formats
+        if (res.data.data) {
+          userData = res.data.data;
+        } else {
+          userData = res.data;
         }
         
-        // Dispatch to Redux store
-        dispatch(addUser(res.data));
+        // Make sure user data has required fields
+        if (!userData.firstName) {
+          console.warn("User data missing required fields:", userData);
+          setError("Login successful but user data is incomplete");
+          setLoading(false);
+          return;
+        }
+        
+        // Dispatch complete user data to Redux store
+        dispatch(addUser(userData));
         
         // Navigate to feed page
         navigate('/');
@@ -41,6 +56,8 @@ export default function LoginPage() {
       console.error("Login error:", err);
       // Extract the error message from the response or use a default message
       setError(err.response?.data?.message || "Login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,8 +96,12 @@ export default function LoginPage() {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-full">
-            Login
+          <button 
+            type="submit" 
+            className={`btn btn-primary w-full ${loading ? 'loading' : ''}`}
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
         <p className="mt-4 text-center text-gray-600">

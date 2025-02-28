@@ -5,8 +5,16 @@ const feedSlice = createSlice({
   initialState: null,
   reducers: {
     addFeed: (state, action) => {
-      // Store only the data array from the API response
-      return action.payload.data || action.payload;
+      // Handle various response formats
+      if (action.payload && action.payload.data && Array.isArray(action.payload.data)) {
+        return action.payload.data;
+      } else if (Array.isArray(action.payload)) {
+        return action.payload;
+      }
+      
+      // Fallback: return empty array if we can't determine format
+      console.warn("Unexpected feed data format:", action.payload);
+      return [];
     },
   },
 });
