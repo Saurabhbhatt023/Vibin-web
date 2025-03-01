@@ -50,7 +50,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <a href="#">Settings</a>
+                <Link to = "/connections">Connections</Link>
               </li>
               <li>
                 <button className="btn w-full text-left" onClick={handleLogout}>Logout</button>
