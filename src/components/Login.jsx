@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constant";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("Raju2@apple.com");
-  const [password, setPassword] = useState("$Bheem2024");
+  const [email, setEmail] = useState("virat@gmail.com");
+  const [password, setPassword] = useState("$Virat2024");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
