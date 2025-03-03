@@ -98,7 +98,8 @@ function EditProfile({ user }) {
         photoUrl,
         skills,
         location,
-        relationshipStatus,
+        // Only include relationshipStatus if it's not empty
+        ...(relationshipStatus ? { relationshipStatus } : {}),
         hobbies
       };
       
