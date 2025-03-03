@@ -16,8 +16,18 @@ const feedSlice = createSlice({
       console.warn("Unexpected feed data format:", action.payload);
       return [];
     },
+    removeUserFromFeed: (state, action) => {
+      // If state is not an array, return it as is
+      if (!Array.isArray(state)) return state;
+      
+      // Filter out the user with the matching _id
+      const userId = action.payload;
+      console.log("Removing user from feed with ID:", userId);
+      
+      return state.filter(user => user._id !== userId);
+    }
   },
 });
 
-export const { addFeed } = feedSlice.actions;
+export const { addFeed, removeUserFromFeed } = feedSlice.actions;
 export default feedSlice.reducer;

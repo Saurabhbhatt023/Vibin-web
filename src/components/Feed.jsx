@@ -44,6 +44,9 @@ const Feed = () => {
   useEffect(() => {
     getFeed();
   }, [user]);
+  if(!feed) return;
+  if(feed.length <0) return <h1> No USers avaiable</h1>
+
 
   if (loading) {
     return (
