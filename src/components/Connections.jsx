@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { addConnections } from "../utils/ConnectionSlice";
+import { addConnections } from "../utils/connectionSlice"; // Fixed import path (lowercase 'c')
 
 const Connections = () => {
    const [loading, setLoading] = useState(true);

@@ -44,9 +44,19 @@ const Feed = () => {
   useEffect(() => {
     getFeed();
   }, [user]);
-  if(!feed) return;
-  if(feed.length <0) return <h1> No USers avaiable</h1>
 
+  // Fixed these early returns that had logic errors
+  if (!feed) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-gray-500">No feed data available</div>
+      </div>
+    );
+  }
+
+  if (Array.isArray(feed) && feed.length === 0) {
+    return <h1 className="text-center p-8">No Users available</h1>;
+  }
 
   if (loading) {
     return (

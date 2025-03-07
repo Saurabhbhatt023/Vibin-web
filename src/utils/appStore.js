@@ -1,14 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
 import feedReducer from "./feedSlice";
-import connectionReducer from "./connectionSlice";; 
-import requestReducer from "./requestSlice"
+import connectionReducer from "./connectionSlice"; // Removed extra semicolon
+import requestReducer from "./requestSlice";
+
 const appStore = configureStore({
     reducer: {
         user: userReducer,
         feed: feedReducer,
         connection: connectionReducer,
-        requests : requestReducer,
+        requests: requestReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
