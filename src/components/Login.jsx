@@ -8,8 +8,8 @@ import SignUp from "./SignUp";
 
 export default function LoginPage() {
   const [showLogin, setShowLogin] = useState(true);
-  const [email, setEmail] = useState("virat@gmail.com");
-  const [password, setPassword] = useState("$Virat2024");
+  const [email, setEmail] = useState("Bill@gmail.com");
+  const [password, setPassword] = useState("$Bill2024");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();

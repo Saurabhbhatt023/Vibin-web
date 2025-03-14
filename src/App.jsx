@@ -7,6 +7,10 @@ import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
 import Connections from "./components/Connections";
 import Request from "./components/Requests";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsOfService from "./components/TermsOfService";
+import RefundPolicy from "./components/RefundPolicy";
+
 function App() {
   return (
     <Provider store={appStore}>
@@ -18,6 +22,9 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/connections" element={<Connections/>}/>
             <Route path="/requests" element={<Request/>}/>
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
           </Route>
           <Route path="/login" element={<Login />} />
         </Routes>
