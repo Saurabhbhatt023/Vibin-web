@@ -26,10 +26,16 @@ export default function LoginPage() {
     setLoading(true);
     
     try {
-      const res = await axios.post(BASE_URL + "/login", {
+      // Notice we no longer need to append "/login" to BASE_URL as the prefix is already included
+      const res = await axios.post(`${BASE_URL}/login`, {
         emailId: email,
         password,
-      }, { withCredentials: true });
+      }, { 
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       
       console.log("Login response:", res.data);
      
@@ -44,7 +50,7 @@ export default function LoginPage() {
         }
         
         // Make sure user data has required fields
-        if (!userData.firstName) {
+        if (!userData || !userData.firstName) {
           console.warn("User data missing required fields:", userData);
           setError("Login successful but user data is incomplete");
           setLoading(false);

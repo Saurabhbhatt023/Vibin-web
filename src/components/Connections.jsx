@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { addConnections } from "../utils/connectionSlice"; // Fixed import path (lowercase 'c')
+import { addConnections } from "../utils/connectionSlice";
 
 const Connections = () => {
    const [loading, setLoading] = useState(true);
@@ -13,7 +13,14 @@ const Connections = () => {
    const fetchConnections = async () => {
       try {
          setLoading(true);
-         const res = await axios.get(BASE_URL + "/user/connections", { withCredentials: true });
+         // Notice we no longer need to append "/user/connections" to BASE_URL
+         const res = await axios.get(`${BASE_URL}/user/connections`, { 
+            withCredentials: true,
+            headers: {
+               'Content-Type': 'application/json'
+            }
+         });
+         
          console.log("Connections data:", res.data); 
          
          // Add connections to Redux store
