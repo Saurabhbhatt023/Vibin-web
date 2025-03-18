@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../utils/constant";
+import { BASE_URL } from "../utils/constants"; // Ensure BASE_URL is correct
 import SignUp from "./SignUp";
 
 export default function LoginPage() {
@@ -26,48 +26,40 @@ export default function LoginPage() {
     setLoading(true);
     
     try {
-      // Notice we no longer need to append "/login" to BASE_URL as the prefix is already included
-      const res = await axios.post(`${BASE_URL}/login`, {
+      console.log("Making login request to:", `${BASE_URL}/api/login`);
+      
+      const res = await axios.post(`${BASE_URL}/api/login`, {
         emailId: email,
         password,
       }, { 
-        withCredentials: true,
+        withCredentials: true, // ✅ Allows sending cookies
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         }
       });
-      
+
       console.log("Login response:", res.data);
-     
+
       if (res.data) {
-        let userData;
-        
-        // Check for different response formats
-        if (res.data.data) {
-          userData = res.data.data;
-        } else {
-          userData = res.data;
-        }
-        
-        // Make sure user data has required fields
+        let userData = res.data.data || res.data; // Check response structure
+
         if (!userData || !userData.firstName) {
           console.warn("User data missing required fields:", userData);
           setError("Login successful but user data is incomplete");
           setLoading(false);
           return;
         }
-        
-        // Dispatch complete user data to Redux store
+
+        // ✅ Store user data in Redux
         dispatch(addUser(userData));
-        
-        // Navigate to feed page
-        navigate('/');
+
+        // ✅ Redirect to home page
+        navigate("/");
       } else {
         setError("Login successful but no user data received");
       }
     } catch (err) {
       console.error("Login error:", err);
-      // Extract the error message from the response or use a default message
       setError(err.response?.data?.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
@@ -80,7 +72,7 @@ export default function LoginPage() {
         {showLogin ? (
           <>
             <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Login</h2>
-            
+
             {/* Display error message if there is one */}
             {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
               <span className="block sm:inline">{error}</span>

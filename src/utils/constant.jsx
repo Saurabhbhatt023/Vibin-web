@@ -1,7 +1,6 @@
-// Dynamically select the correct API URL based on environment
-const isDevelopment = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
+// src/utils/constant.js
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-// Include the /api prefix in both URLs since your backend routes use this prefix
-export const BASE_URL = isDevelopment
-  ? "/api"  // When in development, use relative path because of the Vite proxy
+export const BASE_URL = isDevelopment 
+  ? "/api"  // Use relative path with Vite proxy in development
   : "https://viben-backend.onrender.com/api";
