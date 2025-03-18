@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../utils/constant";
+import { BASE_URL } from "../utils/constants";
 import PropTypes from "prop-types";
 import UserCard from "./UserCard";
 
