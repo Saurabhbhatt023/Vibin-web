@@ -8,8 +8,8 @@ import SignUp from "./SignUp";
 
 export default function LoginPage() {
   const [showLogin, setShowLogin] = useState(true);
-  const [email, setEmail] = useState("Bill@gmail.com");
-  const [password, setPassword] = useState("$Bill2024");
+  const [email, setEmail] = useState("Bill@gmail.com"); // Empty initially
+  const [password, setPassword] = useState("$Bill2024"); // Empty initially
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -17,46 +17,30 @@ export default function LoginPage() {
 
   const toggleView = () => {
     setShowLogin(!showLogin);
-    setError(""); // Clear any errors when switching views
+    setError(""); // Clear errors when switching views
   };
-  
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     
     try {
-      console.log("Making login request to:", `${BASE_URL}/api/login`);
-      
-      const res = await axios.post(`${BASE_URL}/api/login`, {
+      const loginURL = `${BASE_URL}/login`;  // ✅ Use BASE_URL directly
+      console.log("Making login request to:", loginURL);
+  
+      const res = await axios.post(loginURL, {  
         emailId: email,
         password,
-      }, { 
-        withCredentials: true, // ✅ Allows sending cookies
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-
+      }, { withCredentials: true });
+  
       console.log("Login response:", res.data);
-
-      if (res.data) {
-        let userData = res.data.data || res.data; // Check response structure
-
-        if (!userData || !userData.firstName) {
-          console.warn("User data missing required fields:", userData);
-          setError("Login successful but user data is incomplete");
-          setLoading(false);
-          return;
-        }
-
-        // ✅ Store user data in Redux
-        dispatch(addUser(userData));
-
-        // ✅ Redirect to home page
-        navigate("/");
+  
+      if (res.data?.data) {
+        dispatch(addUser(res.data.data)); // ✅ Store user data in Redux
+        navigate("/"); // ✅ Redirect to home
       } else {
-        setError("Login successful but no user data received");
+        setError("Login successful but user data is missing.");
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -73,11 +57,13 @@ export default function LoginPage() {
           <>
             <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Login</h2>
 
-            {/* Display error message if there is one */}
-            {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
-              <span className="block sm:inline">{error}</span>
-            </div>}
-            
+            {/* Display error message if exists */}
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <span>{error}</span>
+              </div>
+            )}
+
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="form-control">
                 <label className="label">
@@ -103,16 +89,20 @@ export default function LoginPage() {
                   required
                 />
               </div>
-              <button 
-                type="submit" 
-                className={`btn btn-primary w-full ${loading ? 'loading' : ''}`}
+              <button
+                type="submit"
+                className={`btn btn-primary w-full ${loading ? "loading" : ""}`}
                 disabled={loading}
               >
                 {loading ? "Logging in..." : "Login"}
               </button>
             </form>
+
             <p className="mt-4 text-center text-gray-600">
-              Don't have an account? <button onClick={toggleView} className="text-primary font-semibold hover:underline">Sign up</button>
+              Don't have an account?{" "}
+              <button onClick={toggleView} className="text-primary font-semibold hover:underline">
+                Sign up
+              </button>
             </p>
           </>
         ) : (
