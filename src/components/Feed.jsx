@@ -1,10 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { BASE_URL } from "../utils/constants";
+import { BASE_URL, configureAxios } from "../utils/constants";
 import { addFeed } from "../utils/feedSlice";
 import { useEffect, useState } from "react";
 import UserCard from "./UserCard";
 import { useNavigate } from "react-router-dom";
+
+// Configure axios defaults
+configureAxios(axios);
 
 const Feed = () => {
   const dispatch = useDispatch();
@@ -15,7 +18,11 @@ const Feed = () => {
   const [error, setError] = useState(null);
 
   const getFeed = async () => {
-    if (!user) {
+    // Check if user is logged in
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    
+    if (!user || !isLoggedIn) {
+      console.log("User not logged in, redirecting to login");
       navigate('/login');
       return;
     }
@@ -23,11 +30,17 @@ const Feed = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.get(BASE_URL + "/feed", { withCredentials: true });
+      
+      console.log("Fetching feed from:", `${BASE_URL}/feed`);
+      const res = await axios.get(`${BASE_URL}/feed`, { 
+        withCredentials: true 
+      });
       
       console.log("Feed data received:", res.data);
       
-      if (res.data && (Array.isArray(res.data) || Array.isArray(res.data.data))) {
+      if (res.data && Array.isArray(res.data.data)) {
+        dispatch(addFeed(res.data.data));
+      } else if (res.data && Array.isArray(res.data)) {
         dispatch(addFeed(res.data));
       } else {
         console.error("Invalid feed data format:", res.data);
@@ -35,6 +48,15 @@ const Feed = () => {
       }
     } catch (err) {
       console.error("Error fetching feed:", err);
+      
+      // If unauthorized, redirect to login
+      if (err.response?.status === 401) {
+        console.log("Unauthorized, redirecting to login");
+        localStorage.removeItem('isLoggedIn');
+        navigate('/login');
+        return;
+      }
+      
       setError("Failed to load feed. Please try again.");
     } finally {
       setLoading(false);
@@ -44,19 +66,6 @@ const Feed = () => {
   useEffect(() => {
     getFeed();
   }, [user]);
-
-  // Fixed these early returns that had logic errors
-  if (!feed) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="text-gray-500">No feed data available</div>
-      </div>
-    );
-  }
-
-  if (Array.isArray(feed) && feed.length === 0) {
-    return <h1 className="text-center p-8">No Users available</h1>;
-  }
 
   if (loading) {
     return (

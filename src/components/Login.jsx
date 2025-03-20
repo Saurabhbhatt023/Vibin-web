@@ -1,15 +1,18 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../utils/constants"; // Ensure BASE_URL is correct
+import { BASE_URL, configureAxios } from "../utils/constants";
 import SignUp from "./SignUp";
+
+// Configure axios defaults
+configureAxios(axios);
 
 export default function LoginPage() {
   const [showLogin, setShowLogin] = useState(true);
-  const [email, setEmail] = useState("Bill@gmail.com"); // Empty initially
-  const [password, setPassword] = useState("$Bill2024"); // Empty initially
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -26,19 +29,26 @@ export default function LoginPage() {
     setLoading(true);
     
     try {
-      const loginURL = `${BASE_URL}/login`;  // ✅ Use BASE_URL directly
+      const loginURL = `${BASE_URL}/login`;
       console.log("Making login request to:", loginURL);
   
       const res = await axios.post(loginURL, {  
         emailId: email,
         password,
-      }, { withCredentials: true });
+      }, { 
+        withCredentials: true 
+      });
   
       console.log("Login response:", res.data);
   
       if (res.data?.data) {
-        dispatch(addUser(res.data.data)); // ✅ Store user data in Redux
-        navigate("/"); // ✅ Redirect to home
+        dispatch(addUser(res.data.data));
+        
+        // Set a flag in localStorage to indicate successful login
+        localStorage.setItem('isLoggedIn', 'true');
+        
+        // Redirect to home
+        navigate("/");
       } else {
         setError("Login successful but user data is missing.");
       }
