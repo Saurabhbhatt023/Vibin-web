@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
@@ -36,13 +36,17 @@ export default function LoginPage() {
         emailId: email,
         password,
       }, { 
-        withCredentials: true 
+        withCredentials: true // This is important for cookies to be set
       });
   
       console.log("Login response:", res.data);
   
-      if (res.data?.data) {
-        dispatch(addUser(res.data.data));
+      // Check if response has data in expected format
+      const userData = res.data?.data || res.data;
+      
+      if (userData) {
+        // Update Redux store with user data
+        dispatch(addUser(userData));
         
         // Set a flag in localStorage to indicate successful login
         localStorage.setItem('isLoggedIn', 'true');
@@ -54,7 +58,10 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data || 
+                          "Login failed. Please check your credentials and try again.";
+      setError(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
     } finally {
       setLoading(false);
     }
@@ -83,6 +90,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
                   className="input input-bordered w-full"
                   required
                 />
@@ -95,6 +103,7 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
                   className="input input-bordered w-full"
                   required
                 />

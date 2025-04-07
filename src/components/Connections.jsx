@@ -3,6 +3,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../utils/connectionSlice";
+import { Link } from "react-router-dom";
 
 const Connections = () => {
    const [loading, setLoading] = useState(true);
@@ -99,9 +100,11 @@ const Connections = () => {
                      <h2 className="text-xl font-semibold">{connection.firstName} {connection.lastName}</h2>
                      {connection.about && <p className="text-gray-600 text-sm mt-1">{connection.about}</p>}
                      <div className="flex space-x-2 mt-2">
+                        <Link to = {'/chat/' + connection._id}> 
                         <button className="bg-blue-500 hover:bg-blue-600 text-white text-sm py-1 px-3 rounded">
                            Message
                         </button>
+                        </Link>
                         <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm py-1 px-3 rounded">
                            View Profile
                         </button>

@@ -24,6 +24,7 @@ const App = () => {
             <Route path="/connections" element={<Connections />} />
             <Route path="/requests" element={<Request />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/chat/:userId" element={<Chat />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/refund-policy" element={<RefundPolicy />} />
