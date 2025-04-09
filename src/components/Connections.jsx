@@ -11,33 +11,37 @@ const Connections = () => {
    const dispatch = useDispatch();
    const connections = useSelector((store) => store.connection);
 
-   const fetchConnections = async () => {
-      try {
-         setLoading(true);
-         // Notice we no longer need to append "/user/connections" to BASE_URL
-         const res = await axios.get(`${BASE_URL}/user/connections`, { 
-            withCredentials: true,
-            headers: {
-               'Content-Type': 'application/json'
-            }
-         });
-         
-         console.log("Connections data:", res.data); 
-         
-         // Add connections to Redux store
-         if (res.data && res.data.data) {
-            dispatch(addConnections(res.data.data));
-         } else if (res.data) {
-            // Fallback if data isn't nested in a data property
-            dispatch(addConnections(res.data));
+  // In Connections.jsx, modify the fetchConnections function:
+// In Connections.jsx
+const fetchConnections = async () => {
+   try {
+      setLoading(true);
+      setError(null); // Reset error state before fetching
+      
+      const res = await axios.get(`${BASE_URL}/user/connections`, { 
+         withCredentials: true,
+         headers: {
+            'Content-Type': 'application/json'
          }
+      });
+      
+      console.log("Connections data:", res.data); 
+      
+      // Check if data exists and has the right structure
+      if (res.data && res.data.success && res.data.data) {
+         dispatch(addConnections(res.data.data));
          setLoading(false);
-      } catch (err) {
-         console.error("Error fetching connections:", err);
-         setError("Failed to load connections. Please try again.");
+      } else {
+         console.error("Invalid data format:", res.data);
+         setError("Invalid data format received from server");
          setLoading(false);
       }
-   };
+   } catch (err) {
+      console.error("Error fetching connections:", err);
+      setError("Failed to load connections. Please try again.");
+      setLoading(false);
+   }
+};
 
    useEffect(() => {
       fetchConnections();
@@ -62,10 +66,11 @@ const Connections = () => {
    // Check if connections exist and has accepted connections with more descriptive debugging
    console.log("Current connections state:", connections);
    
-   const hasAcceptedConnections = connections && 
-                                connections.accepted && 
-                                Array.isArray(connections.accepted) && 
-                                connections.accepted.length > 0;
+   // Update this check in Connections.jsx
+const hasAcceptedConnections = connections && 
+connections.accepted && 
+Array.isArray(connections.accepted) && 
+connections.accepted.length > 0;
    
    if (!hasAcceptedConnections) {
       return (
@@ -88,14 +93,17 @@ const Connections = () => {
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {connections.accepted.map((connection) => (
                <div key={connection._id || Math.random().toString()} className="bg-white rounded-lg shadow-md p-6 flex items-center">
-                  <img 
-                     src={connection.photoUrl || "https://via.placeholder.com/50"} 
-                     alt={`${connection.firstName}'s profile`}
-                     className="w-16 h-16 rounded-full object-cover mr-4"
-                     onError={(e) => {
-                        e.target.src = "https://via.placeholder.com/50";
-                     }}
-                  />
+                
+<img 
+   src={connection.photoUrl || "/default-avatar.png"} 
+   alt={`${connection.firstName}'s profile`}
+   className="w-16 h-16 rounded-full object-cover mr-4"
+   onError={(e) => {
+      // Replace with inline SVG or a reliable default image
+      e.target.onerror = null; // Prevent infinite loop
+      e.target.src = "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3e%3crect width='64' height='64' fill='%23eee'/%3e%3ctext x='32' y='32' dy='.3em' font-size='24' text-anchor='middle' alignment-baseline='middle' font-family='sans-serif' fill='%23aaa'%3eUser%3c/text%3e%3c/svg%3e";
+   }}
+/>
                   <div>
                      <h2 className="text-xl font-semibold">{connection.firstName} {connection.lastName}</h2>
                      {connection.about && <p className="text-gray-600 text-sm mt-1">{connection.about}</p>}

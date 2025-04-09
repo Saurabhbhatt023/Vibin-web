@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const connectionSlice = createSlice({
     name: "connection",
-    initialState: null,  // Fixed typo
+    initialState: null,  // Keep this as null as in your original code
     reducers: {
         addConnections: (state, action) => action.payload,
         removeConnections: () => null,
