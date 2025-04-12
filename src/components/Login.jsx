@@ -11,7 +11,7 @@ configureAxios(axios);
 
 export default function LoginPage() {
   const [showLogin, setShowLogin] = useState(true);
-  const [email, setEmail] = useState("Bill@gmail.com");
+  const [email, setEmail] = useState( );
   const [password, setPassword] = useState("$Bill2024");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,6 +29,17 @@ export default function LoginPage() {
     setLoading(true);
     
     try {
+      // Clear any existing authentication data first
+      localStorage.removeItem('isLoggedIn');
+      
+      // Attempt logout to clear any existing cookies
+      try {
+        await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
+      } catch (logoutErr) {
+        // Ignore errors here, just trying to clean state
+        console.log("Pre-login cleanup attempt, ignoring error:", logoutErr.message);
+      }
+      
       const loginURL = `${BASE_URL}/login`;
       console.log("Making login request to:", loginURL);
   

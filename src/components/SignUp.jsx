@@ -41,6 +41,17 @@ const SignUp = ({ onToggleView }) => {
     }
     
     try {
+      // Clear any existing auth data first
+      localStorage.removeItem('isLoggedIn');
+      
+      // Try to logout to clear cookies
+      try {
+        await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
+      } catch (logoutErr) {
+        // Ignore errors, just trying to clean state
+        console.log("Pre-signup cleanup attempt");
+      }
+      
       const res = await axios.post(BASE_URL + "/signup", {
         firstName,
         lastName,
@@ -70,6 +81,9 @@ const SignUp = ({ onToggleView }) => {
         
         // Dispatch user data to Redux store
         dispatch(addUser(userData));
+        
+        // Set login flag
+        localStorage.setItem('isLoggedIn', 'true');
         
         // Navigate to profile page
         navigate('/profile');

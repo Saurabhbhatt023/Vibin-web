@@ -1,6 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { removeUser } from "../utils/userSlice";
+import { clearFeed } from "../utils/feedSlice";
+import { clearConnections } from "../utils/connectionSlice";
+import { clearRequests } from "../utils/requestSlice";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
 
 const Navbar = () => {
   const user = useSelector((store) => store.user);
@@ -8,9 +13,19 @@ const Navbar = () => {
   const navigate = useNavigate();
   
   const handleLogout = () => {
+    // Clear Redux store for all slices
     dispatch(removeUser());
+    dispatch(clearFeed());
+    dispatch(clearConnections());
+    dispatch(clearRequests());
+    
+    // Remove from localStorage
     localStorage.removeItem('isLoggedIn');
-    navigate('/login');
+    
+    // Make a logout request to backend to clear cookies
+    axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true })
+      .catch(err => console.error("Logout error:", err))
+      .finally(() => navigate('/login'));
   };
   
   return (
