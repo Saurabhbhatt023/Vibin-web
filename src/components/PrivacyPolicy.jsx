@@ -82,16 +82,7 @@ const PrivacyPolicy = () => {
           We implement strong security measures including encryption, access controls, and regular security assessments to protect your personal information. However, no internet transmission is
           100% secure, and we cannot guarantee absolute security.
         </p>
-  
-        <h2 className="text-xl font-semibold mt-6 mb-2">6. Your Rights</h2>
-        <p className="mb-4">Depending on your location, you may have rights to:</p>
-        <ul className="list-disc pl-6 mb-4">
-          <li className="mb-2">Access your personal data</li>
-          <li className="mb-2">Request data correction or deletion</li>
-          <li className="mb-2">Restrict or object to certain processing activities</li>
-          <li className="mb-2">Data portability (receiving your data in a structured format)</li>
-          <li className="mb-2">Withdraw consent for optional processing activities</li>
-        </ul>
+
   
         <h2 className="text-xl font-semibold mt-6 mb-2">7. International Data Transfers</h2>
         <p className="mb-4">
