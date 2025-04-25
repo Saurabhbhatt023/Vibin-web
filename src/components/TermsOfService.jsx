@@ -20,7 +20,10 @@ const TermsOfService = () => {
         <h3 className="text-lg font-medium mt-4 mb-2">3.3 Account Termination</h3>
         <p className="mb-4">We reserve the right to suspend or terminate your account at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties, or for any other reason.</p>
         
-       
+        <h2 className="text-xl font-semibold mt-6 mb-2">4. User Responsibilities</h2>
+        <h3 className="text-lg font-medium mt-4 mb-2">4.1 Content</h3>
+        <p className="mb-4">You are solely responsible for all content that you upload, post, email, transmit, or otherwise make available via the Service. You agree not to post content that is unlawful, harmful, threatening, abusive, harassing, defamatory, vulgar, obscene, invasive of another's privacy, hateful, or racially, ethnically, or otherwise objectionable.</p>
+        
         <h3 className="text-lg font-medium mt-4 mb-2">4.2 Prohibited Activities</h3>
         <p className="mb-4">You agree not to:</p>
         <ul className="list-disc pl-6 mb-4">

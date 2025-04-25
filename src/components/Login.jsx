@@ -11,7 +11,7 @@ configureAxios(axios);
 
 export default function LoginPage() {
   const [showLogin, setShowLogin] = useState(true);
-  const [email, setEmail] = useState( );
+  const [email, setEmail] = useState("Bill@gmail.com");
   const [password, setPassword] = useState("$Bill2024");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
